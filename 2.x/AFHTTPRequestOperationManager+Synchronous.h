@@ -61,7 +61,7 @@
      operation:(AFHTTPRequestOperation *__autoreleasing *) operationPtr
          error:(NSError *__autoreleasing *) outError;
 
-- (id)syncPost:(NSString *)URLString
+- (id)syncPOST:(NSString *)URLString
 multipartBlock:(void (^)(id <AFMultipartFormData> formData))block
     parameters:(id)parameters
      operation:(AFHTTPRequestOperation *__autoreleasing *)operationPtr
