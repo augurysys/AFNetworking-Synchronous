@@ -48,7 +48,7 @@
  This category is suitable for most of the request operation subclasses built into AFNetworking, which process their response objects synchronously. If you're using the processingBlock on AFImageRequestOperation, which contains essential processing in the completion handler, or your subclass performs other asynchronous processing in the completion handler, use the version in the using-completion-blocks branch instead.
  
  All custom subclasses must override `-responseObject`. See AFHTTPRequestOperation+ResponseObject.h for more information.
-*/
+ */
 @interface AFHTTPRequestOperationManager (Synchronous)
 
 - (id)syncGET:(NSString *)path
@@ -60,6 +60,12 @@
     parameters:(id)parameters
      operation:(AFHTTPRequestOperation *__autoreleasing *) operationPtr
          error:(NSError *__autoreleasing *) outError;
+
+- (id)syncPost:(NSString *)URLString
+multipartBlock:(void (^)(id <AFMultipartFormData> formData))block
+    parameters:(id)parameters
+     operation:(AFHTTPRequestOperation *__autoreleasing *)operationPtr
+         error:(NSError *__autoreleasing *)outError;
 
 - (id)syncPUT:(NSString *)path
    parameters:(id)parameters

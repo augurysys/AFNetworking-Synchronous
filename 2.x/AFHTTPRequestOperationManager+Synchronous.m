@@ -30,9 +30,12 @@
                       parameters:(id)parameters
                        operation:(AFHTTPRequestOperation *__autoreleasing *)operationPtr
                            error:(NSError *__autoreleasing *)outError {
-
-    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters error:nil];
-
+    
+    NSMutableURLRequest *request = [self.requestSerializer requestWithMethod:method
+                                                                   URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString]
+                                                                  parameters:parameters
+                                                                       error:nil];
+    
     AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
                                                                success:nil
                                                                failure:nil];
@@ -63,6 +66,34 @@
          error:(NSError *__autoreleasing *) outError
 {
     return [self synchronouslyPerformMethod:@"POST" URLString:URLString parameters:parameters operation:operationPtr error:outError];
+}
+
+- (id)syncPost:(NSString *)URLString
+multipartBlock:(void (^)(id <AFMultipartFormData> formData))block
+    parameters:(id)parameters
+     operation:(AFHTTPRequestOperation *__autoreleasing *)operationPtr
+         error:(NSError *__autoreleasing *)outError {
+    
+    NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@"POST"
+                                                                                URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString]
+                                                                               parameters:parameters
+                                                                constructingBodyWithBlock:block
+                                                                                    error:nil];
+    
+    AFHTTPRequestOperation *op = [self HTTPRequestOperationWithRequest:request
+                                                               success:nil
+                                                               failure:nil];
+    
+    [op start];
+    [op waitUntilFinished];
+    
+    if (operationPtr != nil) *operationPtr = op;
+    
+    // Must call responseObject before checking the error
+    id responseObject = [op responseObject];
+    if (outError != nil) *outError = [op error];
+    
+    return responseObject;
 }
 
 - (id)syncPUT:(NSString *)URLString
